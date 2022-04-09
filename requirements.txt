@@ -1,1 +1,2 @@
-PILLOW
+PILLOW~=9.1.0
+PySimpleGUI~=4.59.0
