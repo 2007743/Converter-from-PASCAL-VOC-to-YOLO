@@ -20,7 +20,7 @@ pip install -r requirements.txt
 ```
 python Convertor.py --img data\images --cords data\images_box.txt --classes \data\classes.txt --imgclasses data\imgclasses.txt
 ```
-# Запуск без графического интерфейса.
+# Запуск с графическим интерфейсом.
 **Для запуска конвертора вам нужно запустить файл Convertor UI.py .**
 ### Пример запуска с графическим интерфейсом.
 ```
