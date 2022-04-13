@@ -7,7 +7,7 @@ git clone https://github.com/2007743/Converter-from-PASCAL-VOC-to-YOLO  # clone
 cd Converter-from-PASCAL-VOC-to-YOLO
 pip install -r requirements.txt
 ```
-# Запуск.
+# Запуск без графического интерфейса.
 **Для запуска конвертора вам нужно указать параметры ```--img, --cords, --classes, --imgclasses ```**
 ### Параметры.
 ```
@@ -19,6 +19,12 @@ pip install -r requirements.txt
 ### Пример запуска.
 ```
 python Convertor.py --img data\images --cords data\images_box.txt --classes \data\classes.txt --imgclasses data\imgclasses.txt
+```
+# Запуск без графического интерфейса.
+**Для запуска конвертора вам нужно запустить файл Convertor UI.py .**
+### Пример запуска с графическим интерфейсом.
+```
+python Convertor UI.py 
 ```
 # Выходные данные.
 **Если вы все указали правильно то в папке с фотографиями будут создаваться txt файлы с названиями фото и в формате yolo.**
