@@ -1,19 +1,8 @@
+import re
+
 from bs4 import BeautifulSoup
 import os
 import PySimpleGUI as sg
-
-fd = open('VOC2012/VOC2012/Annotations/2007_000027.xml', 'r')
-xml_file = fd.read()
-soup = BeautifulSoup(xml_file, 'lxml')
-for tag in soup.findAll("xmin"):
-    print(tag)
-for tag in soup.findAll("ymin"):
-    print(tag)
-for tag in soup.findAll("xmax"):
-    print(tag)
-for tag in soup.findAll("ymax"):
-    print(tag)
-fd.close()
 
 
 def convert(size, box):
@@ -31,31 +20,28 @@ def convert(size, box):
 
 
 def datafolder():
-    while True:
-        sg.set_options(auto_size_buttons=True)
-        sg.theme('dark grey 9')
-        foldername = sg.popup_get_folder(
-            'Укажите путь до путь до папки с фото.',
-            title='Conventor', no_titlebar=True, grab_anywhere=True)
-        if foldername == '':
-            return
-        folder = sg.popup_yes_no('Вы указали путь до путь до папки с фото?', no_titlebar=True, grab_anywhere=True)
-        if folder == 'Yes':
-            if foldername is not None:
-                try:
-                    print(foldername)
-                    return foldername
-                except:
-                    sg.popup_error('Error reading file')
-                    return
-        elif folder == 'No':
-            print(123123)
-        else:
-            break
+    sg.set_options(auto_size_buttons=True)
+    sg.theme('dark grey 9')
+    foldername = sg.popup_get_folder('Укажите путь до путь до папки с фото.',
+                                     title='Conventor', grab_anywhere=True)
+    if foldername == '':
+        return
+    folder = sg.popup_yes_no('Вы указали путь до путь до папки с фото?', grab_anywhere=True)
+    if folder == 'Yes':
+        if foldername is not None:
+            try:
+                print(foldername)
+                return foldername
+            except:
+                sg.popup_error('Error reading file')
+                return
 
 
 folder_images = datafolder()
 files = os.listdir(folder_images)
+
+
+
 
 
 def spisok():
@@ -65,25 +51,48 @@ def spisok():
             nazv.append(f.split('.')[0])
     return nazv
 
-def size(nazv):
-    fd = open(f'{folder_images}/{nazv}.xml', 'r')
-    xml_file = fd.read()
-    soup = BeautifulSoup(xml_file, 'lxml')
-    return soup.findAll("width"), soup.findAll("height")
+
+def size():
+    d = {}
+    for i in spisok():
+        fd = open(f'{folder_images}/{i}.xml', 'r')
+        xml_file = fd.read()
+        soup = BeautifulSoup(xml_file, 'lxml')
+        d.update({i: [soup.find("width").text, soup.find("height").text]})
+    print(d)
+    return d
+
+
+def classes():
+    a = 0
+    for i in spisok():
+        fd = open(f'{folder_images}/{i}.xml', 'r')
+        xml_file = fd.read()
+        soup = BeautifulSoup(xml_file, 'lxml')
+        for b in soup.findAll("name"):
+            x = open(f'{folder_images}/classes.txt', 'a+')
+            if x.readlines(a) != b.text:
+                x.write(f"\n {b.text}")
+
 
 
 def convertor():
     xywh = "546"
-    if os.path.isfile(f'{folder_images}\{nazvanie}.jpg'):
+    x = 0
+    s = spisok()
+    while True:
         x = x + 1
-        if not os.path.isfile(f'.{folder_images}\{spisok[x]}'):
-            youlo = convert(size(nazvanie), (xywh))
-            nazv3 = nazv1()[nazvanie]
-            for x, rt in enumerate(name1):
-                name.update({rt.rstrip(): x})
-                if x == 69:
-                    name23 = name[nazv3]
-                    o = open(f'{folder_images}\{nazvanie}.txt', 'w')
-                    o1 = o.write(f'{name23} {youlo[0]} {youlo[1]} {youlo[2]} {youlo[3]}')
-        else:
-            v = 0
+        if os.path.isfile(f'{folder_images}\{s[x]}.jpg'):
+            if not os.path.isfile(f'.{folder_images}\{s[x]}'):
+                height = size().get(s[x])[1]
+                width = size().get(s[x])[0]
+                sizes = (width,height)
+                print(sizes)
+                youlo = convert(sizes, (xywh))
+                print(youlo)
+                o = open(f'{folder_images}\{s[x]}.txt', 'w')
+                o.write(f'{classes} {youlo[0]} {youlo[1]} {youlo[2]} {youlo[3]}')
+
+
+if __name__ == '__main__':
+    classes()

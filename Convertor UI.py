@@ -21,9 +21,7 @@ def datafolder():
                 except:
                     sg.popup_error('Error reading file')
                     return
-        elif folder == 'No':
-            print(123123)
-        else:
+        elif folder != 'No':
             break
 
 
@@ -45,9 +43,7 @@ def datacords():
                 except:
                     sg.popup_error('Error reading file')
                     return
-        elif cords == 'No':
-            print(123123)
-        else:
+        elif cords != 'No':
             break
 
 
@@ -70,10 +66,9 @@ def dataclasses():
                 except:
                     sg.popup_error('Error reading file')
                     return
-        elif classes == 'No':
-            print(12321323)
-        else:
+        elif classes != 'No':
             break
+
 
 
 def dataimgclasses():
@@ -95,9 +90,7 @@ def dataimgclasses():
                 except:
                     sg.popup_error('Error reading file')
                     break
-        elif imgclasses == 'No':
-            print(123121231233)
-        else:
+        elif imgclasses != 'No':
             break
         break
 
@@ -154,14 +147,12 @@ def convertor():
         i = f.rstrip().split(' ')
         xywh = float(i[1]), float(i[3]), float(i[2]), float(i[4])
         nazvanie = i[0]
-        print(nazvanie)
         if os.path.isfile(
                 f'{folder_images}\{nazvanie}.jpg'):  # Specify the path to the folder where the images are located
             if not os.path.isfile(
                     f'.{folder_images}\{nazvanie}.txt'):  # Specify the path to the folder where the pictures are located to save the description of the photo to this folder already in YOLO format
                 youlo = convert(razresh(nazvanie), (xywh))
-                nazv2 = nazv1()
-                nazv3 = nazv2[nazvanie]
+                nazv3 = nazv1()[nazvanie]
                 for x, rt in enumerate(name1):
                     name.update({rt.rstrip(): x})
                     if x == 69:
