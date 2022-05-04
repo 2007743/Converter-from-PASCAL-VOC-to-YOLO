@@ -1,5 +1,3 @@
-import re
-
 from bs4 import BeautifulSoup
 import os
 import PySimpleGUI as sg
@@ -41,9 +39,6 @@ folder_images = datafolder()
 files = os.listdir(folder_images)
 
 
-
-
-
 def spisok():
     nazv = []
     for f in files:
@@ -58,41 +53,53 @@ def size():
         fd = open(f'{folder_images}/{i}.xml', 'r')
         xml_file = fd.read()
         soup = BeautifulSoup(xml_file, 'lxml')
-        d.update({i: [soup.find("width").text, soup.find("height").text]})
+        d.update({i: [soup.find("xmin").text, soup.find("ymin").text, soup.find("xmax").text, soup.find("ymax").text]})
     print(d)
+    return d
+
+
+def xymn():
+    d = {}
+    for i in spisok():
+        fd = open(f'{folder_images}/{i}.xml', 'r')
+        xml_file = fd.read()
+        soup = BeautifulSoup(xml_file, 'lxml')
+        d.update({i: [soup.find("width").text, soup.find("height").text]})
     return d
 
 
 def classes():
     a = 0
+    l = {}
     for i in spisok():
         fd = open(f'{folder_images}/{i}.xml', 'r')
         xml_file = fd.read()
         soup = BeautifulSoup(xml_file, 'lxml')
-        for b in soup.findAll("name"):
-            x = open(f'{folder_images}/classes.txt', 'a+')
-            if x.readlines(a) != b.text:
-                x.write(f"\n {b.text}")
-
+        b = soup.find("name").text
+        x = open(f'{folder_images}/classes.txt', 'a+')
+        a = a+1
+        if l.get(b) != 1:
+            l.update({b : "1"})
+            x.write(f"\n {b}")
 
 
 def convertor():
-    xywh = "546"
     x = 0
     s = spisok()
-    while True:
-        x = x + 1
-        if os.path.isfile(f'{folder_images}\{s[x]}.jpg'):
-            if not os.path.isfile(f'.{folder_images}\{s[x]}'):
+    for i in xymn():
+        x = x+1
+        print(i)
+        xywh = (i[1], i[3], i[2], i[4])
+        if os.path.isfile(f'{folder_images}\\{s[x]}.jpg'):
+            if not os.path.isfile(f'.{folder_images}\\{s[x]}'):
                 height = size().get(s[x])[1]
                 width = size().get(s[x])[0]
-                sizes = (width,height)
+                sizes = (width, height)
                 print(sizes)
                 youlo = convert(sizes, (xywh))
                 print(youlo)
-                o = open(f'{folder_images}\{s[x]}.txt', 'w')
+                o = open(f'{folder_images}\\{s[x]}.txt', 'w')
                 o.write(f'{classes} {youlo[0]} {youlo[1]} {youlo[2]} {youlo[3]}')
-
 
 if __name__ == '__main__':
     classes()
