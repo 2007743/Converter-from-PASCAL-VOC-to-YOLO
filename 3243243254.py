@@ -82,7 +82,7 @@ def classes():
         if b not in x3:
             x.write(f'{b}\n')
             d.update({i: b})
-        return d
+    return d
 
 
 def convertor():
@@ -110,5 +110,4 @@ def convertor():
 
 
 if __name__ == '__main__':
-    classes()
     convertor()
