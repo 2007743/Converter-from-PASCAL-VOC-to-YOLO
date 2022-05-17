@@ -47,18 +47,17 @@ def spisok():
     return nazv
 
 
-def size():
+def xymn():
     d = {}
     for i in spisok():
         fd = open(f'{folder_images}/{i}.xml', 'r')
         xml_file = fd.read()
         soup = BeautifulSoup(xml_file, 'lxml')
         d.update({i: [soup.find("xmin").text, soup.find("ymin").text, soup.find("xmax").text, soup.find("ymax").text]})
-    print(d)
     return d
 
 
-def xymn():
+def size():
     d = {}
     for i in spisok():
         fd = open(f'{folder_images}/{i}.xml', 'r')
@@ -69,37 +68,47 @@ def xymn():
 
 
 def classes():
-    a = 0
-    l = {}
+    d = {}
+    if os.path.isfile(f'{folder_images}/classes.txt'):
+        os.remove(f'{folder_images}/classes.txt')
     for i in spisok():
         fd = open(f'{folder_images}/{i}.xml', 'r')
         xml_file = fd.read()
         soup = BeautifulSoup(xml_file, 'lxml')
         b = soup.find("name").text
         x = open(f'{folder_images}/classes.txt', 'a+')
-        a = a+1
-        if l.get(b) != 1:
-            l.update({b : "1"})
-            x.write(f"\n {b}")
+        x1 = open(f'{folder_images}/classes.txt', 'r+')
+        x3 = x1.read().split()
+        if b not in x3:
+            x.write(f'{b}\n')
+            d.update({i: b})
+        return d
 
 
 def convertor():
     x = 0
+    name = {}
     s = spisok()
-    for i in xymn():
-        x = x+1
-        print(i)
-        xywh = (i[1], i[3], i[2], i[4])
+    d = xymn()
+    sz = size()
+    c = classes()
+    for i in d:
+        x = x + 1
+        xywh = (float(d.get(i)[0]), float(d.get(i)[2]), float(d.get(i)[1]), float(d.get(i)[3]))
         if os.path.isfile(f'{folder_images}\\{s[x]}.jpg'):
             if not os.path.isfile(f'.{folder_images}\\{s[x]}'):
-                height = size().get(s[x])[1]
-                width = size().get(s[x])[0]
+                height = float(sz.get(s[x])[1])
+                width = float(sz.get(s[x])[0])
                 sizes = (width, height)
-                print(sizes)
                 youlo = convert(sizes, (xywh))
-                print(youlo)
+                for er, rt in enumerate(open(f'{folder_images}/classes.txt', 'r')):
+                    name.update({rt.rstrip(): er})
+                print(name)
+                print(c.get(i))
                 o = open(f'{folder_images}\\{s[x]}.txt', 'w')
-                o.write(f'{classes} {youlo[0]} {youlo[1]} {youlo[2]} {youlo[3]}')
+                o.write(f'{name[c.get(i)]} {youlo[0]} {youlo[1]} {youlo[2]} {youlo[3]}')
+
 
 if __name__ == '__main__':
     classes()
+    convertor()

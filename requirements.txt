@@ -1,2 +1,3 @@
 PILLOW
 PySimpleGUI
+beautifulsoup4
